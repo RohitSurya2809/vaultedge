@@ -1,4 +1,6 @@
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\exception\BadRequestException.java
+D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\config\UUIDConverter.java
+D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\model\AuthUser.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\dto\CustomerResponse.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\model\Transaction.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\repository\TransactionRepository.java
@@ -7,6 +9,7 @@ D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\model\Account.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\exception\ResourceNotFoundException.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\service\CustomerController.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\VaultEdgeApplication.java
+D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\repository\AuthUserRepository.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\service\CustomerService.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\config\SecurityConfig.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\dto\RegisterRequest.java

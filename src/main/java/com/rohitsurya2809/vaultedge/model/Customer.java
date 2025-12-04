@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "customers")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -41,6 +41,9 @@ public class Customer {
         this.createdAt = OffsetDateTime.now();
         this.updatedAt = OffsetDateTime.now();
     }
+    @JsonIgnore
+@OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+private AuthUser authUser;
 
     @PreUpdate
     public void preUpdate() {

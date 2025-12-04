@@ -7,10 +7,15 @@ com\rohitsurya2809\vaultedge\VaultEdgeApplication.class
 com\rohitsurya2809\vaultedge\dto\CustomerResponse$CustomerResponseBuilder.class
 com\rohitsurya2809\vaultedge\dto\CustomerResponse.class
 com\rohitsurya2809\vaultedge\model\Account$AccountBuilder.class
+com\rohitsurya2809\vaultedge\model\AuthUser$AuthUserBuilder.class
 com\rohitsurya2809\vaultedge\model\Account.class
 com\rohitsurya2809\vaultedge\service\CustomerController.class
+com\rohitsurya2809\vaultedge\model\Transaction$TransactionBuilder.class
 com\rohitsurya2809\vaultedge\service\CustomerService.class
+com\rohitsurya2809\vaultedge\model\AuthUser.class
+com\rohitsurya2809\vaultedge\config\UUIDConverter.class
 com\rohitsurya2809\vaultedge\config\SecurityConfig.class
 com\rohitsurya2809\vaultedge\exception\ResourceNotFoundException.class
 com\rohitsurya2809\vaultedge\repository\CustomerRepository.class
 com\rohitsurya2809\vaultedge\exception\GlobalExceptionHandler.class
+com\rohitsurya2809\vaultedge\repository\AuthUserRepository.class
