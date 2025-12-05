@@ -11,4 +11,6 @@ public class CustomerResponse {
     private String email;
     private String phone;
     private String address;
+    
+    
 }

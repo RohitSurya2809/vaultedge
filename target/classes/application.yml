@@ -17,3 +17,7 @@
 flyway:
   enabled: true
   locations: classpath:db/migration
+
+jwt:
+  secret: 12344567890abcdefghijklmnopqrstuvwxyz
+  expiration: 3600 

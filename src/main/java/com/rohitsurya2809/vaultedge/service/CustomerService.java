@@ -1,6 +1,7 @@
 package com.rohitsurya2809.vaultedge.service;
 
 import com.rohitsurya2809.vaultedge.dto.RegisterRequest;
+import com.rohitsurya2809.vaultedge.dto.CustomerResponse;
 import com.rohitsurya2809.vaultedge.model.Customer;
 import com.rohitsurya2809.vaultedge.repository.CustomerRepository;
 import com.rohitsurya2809.vaultedge.exception.BadRequestException;
@@ -23,19 +24,23 @@ public class CustomerService {
     }
 
     public Customer register(RegisterRequest req) {
-        Optional<Customer> existing = repo.findByEmail(req.getEmail());
-        if (existing.isPresent()) {
-            throw new BadRequestException("Email already exists");
-        }
-        Customer c = Customer.builder()
-                .fullName(req.getFullName())
-                .email(req.getEmail())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .phone(req.getPhone())
-                .address(req.getAddress())
-                .build();
-        return repo.save(c);
+
+    Optional<Customer> existing = repo.findByEmail(req.getEmail());
+    if (existing.isPresent()) {
+        throw new BadRequestException("Email already exists");
     }
+
+    Customer c = Customer.builder()
+            .fullName(req.getFullName())
+            .email(req.getEmail())
+            .password(passwordEncoder.encode(req.getPassword()))
+            .phone(req.getPhone())
+            .address(req.getAddress())
+            .build();
+
+    return repo.save(c);
+}
+
 
     public Customer getById(String id) {
         return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
