@@ -5,7 +5,7 @@ import com.rohitsurya2809.vaultedge.dto.CustomerResponse;
 import com.rohitsurya2809.vaultedge.model.Customer;
 import com.rohitsurya2809.vaultedge.repository.CustomerRepository;
 import com.rohitsurya2809.vaultedge.exception.BadRequestException;
-import com.rohitsurya2809.vaultedge.exception.ResourceNotFoundException;
+import com.rohitsurya2809.vaultedge.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -43,7 +43,7 @@ public class CustomerService {
 
 
     public Customer getById(String id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        return repo.findById(java.util.UUID.fromString(id)).orElseThrow(() -> new NotFoundException("Customer not found"));
     }
 
     public List<Customer> listAll() {

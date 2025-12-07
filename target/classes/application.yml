@@ -21,3 +21,7 @@ flyway:
 jwt:
   secret: 12344567890abcdefghijklmnopqrstuvwxyz
   expiration: 3600 
+
+logging:
+  level:
+    org.springframework.security: DEBUG
