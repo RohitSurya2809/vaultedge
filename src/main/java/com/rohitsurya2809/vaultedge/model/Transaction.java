@@ -7,14 +7,14 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transactions",indexes = {@Index(name = "idx_transaction_account", columnList = "account_id")})
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Transaction {
 
     @Id
     @Column(columnDefinition = "BINARY(16)", nullable = false)
     private UUID id = UUID.randomUUID();
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)")
     private Account account;
@@ -37,4 +37,10 @@ public class Transaction {
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private OffsetDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null) this.id = UUID.randomUUID();
+        this.createdAt = OffsetDateTime.now();
+    }
 }
