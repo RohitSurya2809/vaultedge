@@ -19,7 +19,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 
 @Configuration
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
@@ -57,22 +57,34 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // public endpoints
-                .requestMatchers("/api/v1/auth/**", "/api/v1/customers/register").permitAll()
-                .requestMatchers("/error").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                
-                .anyRequest().authenticated()
-            );
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+            // Public endpoints
+            .requestMatchers("/api/v1/auth/**").permitAll()
+            .requestMatchers("/api/v1/customers/register").permitAll()
+            .requestMatchers("/error").permitAll()
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-        // add jwt filter before username/password filter
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+            // Admin-only endpoints
+            .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/v1/accounts/all/**").hasRole("ADMIN")
 
-        return http.build();
-    }
+            // Authenticated endpoints
+            .requestMatchers("/api/v1/accounts/**").authenticated()
+            .requestMatchers("/api/v1/transactions/**").authenticated()
+
+            // Catch-all
+            .anyRequest().authenticated()
+        )
+        .authenticationProvider(daoAuthenticationProvider());
+
+    // Register JWT filter
+    http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}
+
 }

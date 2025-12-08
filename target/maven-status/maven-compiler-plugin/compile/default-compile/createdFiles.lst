@@ -42,6 +42,7 @@ com\rohitsurya2809\vaultedge\model\AuthUser$AuthUserBuilder.class
 com\rohitsurya2809\vaultedge\security\JwtAuthenticationFilter.class
 com\rohitsurya2809\vaultedge\model\Account.class
 com\rohitsurya2809\vaultedge\model\Transaction$TransactionBuilder.class
+com\rohitsurya2809\vaultedge\controller\AdminController.class
 com\rohitsurya2809\vaultedge\controller\TransactionController.class
 com\rohitsurya2809\vaultedge\dto\WithdrawRequest$WithdrawRequestBuilder.class
 com\rohitsurya2809\vaultedge\model\AuthUser.class
