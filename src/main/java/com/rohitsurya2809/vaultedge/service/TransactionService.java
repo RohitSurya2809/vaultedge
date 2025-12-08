@@ -1,5 +1,14 @@
 package com.rohitsurya2809.vaultedge.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import com.rohitsurya2809.vaultedge.repository.TransactionSpecification;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
+import java.time.ZoneOffset;
 import com.rohitsurya2809.vaultedge.dto.*;
 import com.rohitsurya2809.vaultedge.exception.BadRequestException;
 import com.rohitsurya2809.vaultedge.exception.NotFoundException;
@@ -171,4 +180,40 @@ public class TransactionService {
                 .createdAt(tx.getCreatedAt())
                 .build();
     }
+    public Page<TransactionResponse> listForAccountPaged(UUID accountId,
+                                                    int page,
+                                                    int size,
+                                                    String sort,
+                                                    String type,
+                                                    String fromIso,
+                                                    String toIso) {
+    // parse sort (e.g. createdAt,desc)
+    Sort sortObj = Sort.by(Sort.Direction.DESC, "createdAt"); // default
+    if (sort != null && !sort.isBlank()) {
+        String[] parts = sort.split(",");
+        if (parts.length == 2) {
+            sortObj = Sort.by(Sort.Direction.fromString(parts[1]), parts[0]);
+        } else {
+            sortObj = Sort.by(sort);
+        }
+    }
+
+    Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size), sortObj);
+
+    OffsetDateTime from = null, to = null;
+    try {
+        if (fromIso != null && !fromIso.isBlank()) from = OffsetDateTime.parse(fromIso);
+    } catch (DateTimeParseException ignored) {}
+    try {
+        if (toIso != null && !toIso.isBlank()) to = OffsetDateTime.parse(toIso);
+    } catch (DateTimeParseException ignored) {}
+
+    Specification<com.rohitsurya2809.vaultedge.model.Transaction> spec =
+            TransactionSpecification.build(accountId, type, from, to);
+
+    Page<com.rohitsurya2809.vaultedge.model.Transaction> txPage =
+            transactionRepository.findAll(spec, pageable);
+
+    return txPage.map(this::toResponse);
+}
 }

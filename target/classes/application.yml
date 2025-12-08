@@ -25,3 +25,5 @@ jwt:
 logging:
   level:
     org.springframework.security: DEBUG
+    com.rohitsurya2809.vaultedge.security: DEBUG
+

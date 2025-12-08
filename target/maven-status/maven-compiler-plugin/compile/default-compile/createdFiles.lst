@@ -23,6 +23,7 @@ com\rohitsurya2809\vaultedge\model\Customer$CustomerBuilder.class
 com\rohitsurya2809\vaultedge\repository\TransactionRepository.class
 com\rohitsurya2809\vaultedge\dto\LoginRequest$LoginRequestBuilder.class
 com\rohitsurya2809\vaultedge\model\Account$AccountBuilder.class
+com\rohitsurya2809\vaultedge\repository\TransactionSpecification.class
 com\rohitsurya2809\vaultedge\dto\LoginResponse$LoginResponseBuilder.class
 com\rohitsurya2809\vaultedge\service\CustomerService.class
 com\rohitsurya2809\vaultedge\service\AuthService.class
