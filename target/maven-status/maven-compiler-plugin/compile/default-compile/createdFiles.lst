@@ -14,6 +14,7 @@ com\rohitsurya2809\vaultedge\repository\AuthUserRepository.class
 com\rohitsurya2809\vaultedge\dto\TransactionResponse.class
 com\rohitsurya2809\vaultedge\dto\RegisterRequest.class
 com\rohitsurya2809\vaultedge\dto\CustomerResponse$CustomerResponseBuilder.class
+com\rohitsurya2809\vaultedge\dto\TransactionSummaryResponse.class
 com\rohitsurya2809\vaultedge\dto\WithdrawRequest.class
 com\rohitsurya2809\vaultedge\controller\AccountController$CreateAccountRequest.class
 com\rohitsurya2809\vaultedge\dto\DepositRequest$DepositRequestBuilder.class

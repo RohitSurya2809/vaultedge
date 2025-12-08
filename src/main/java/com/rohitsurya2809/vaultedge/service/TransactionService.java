@@ -19,10 +19,13 @@ import com.rohitsurya2809.vaultedge.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 @Service
 public class TransactionService {
@@ -168,6 +171,56 @@ public class TransactionService {
         return list.stream().map(this::toResponse).collect(Collectors.toList());
     }
 
+    /**
+ * Returns summary analytics for the given account.
+ * Optional ISO-8601 from/to filters (OffsetDateTime strings).
+ */
+public TransactionSummaryResponse getSummary(UUID accountId, String fromIso, String toIso) {
+    // parse from/to into OffsetDateTime (reuse same parsing style as listForAccountPaged)
+    OffsetDateTime from = null;
+    OffsetDateTime to = null;
+    try {
+        if (fromIso != null && !fromIso.isBlank()) from = OffsetDateTime.parse(fromIso);
+    } catch (DateTimeParseException ignored) {}
+    try {
+        if (toIso != null && !toIso.isBlank()) to = OffsetDateTime.parse(toIso);
+    } catch (DateTimeParseException ignored) {}
+
+    // Build spec for account + optional filters
+    Specification<Transaction> spec = TransactionSpecification.build(accountId, null, from, to);
+
+    // Fetch matching transactions (could be many; fine for medium datasets)
+    List<Transaction> txs = transactionRepository.findAll(spec);
+
+    // compute totals and counts
+    BigDecimal totalDeposits = BigDecimal.ZERO;
+    BigDecimal totalWithdrawals = BigDecimal.ZERO;
+    Map<String, Long> byType = new HashMap<>();
+
+    for (Transaction tx : txs) {
+        String type = tx.getType() != null ? tx.getType().toUpperCase() : "UNKNOWN";
+        byType.put(type, byType.getOrDefault(type, 0L) + 1L);
+
+        if ("DEPOSIT".equals(type)) {
+            totalDeposits = totalDeposits.add(tx.getAmount() != null ? tx.getAmount() : BigDecimal.ZERO);
+        } else if ("WITHDRAW".equals(type) || "WITHDRAWAL".equals(type)) {
+            totalWithdrawals = totalWithdrawals.add(tx.getAmount() != null ? tx.getAmount() : BigDecimal.ZERO);
+        } else if ("TRANSFER_IN".equals(type)) {
+            // treat transfer_in as deposit if you want
+            totalDeposits = totalDeposits.add(tx.getAmount() != null ? tx.getAmount() : BigDecimal.ZERO);
+        } else if ("TRANSFER_OUT".equals(type)) {
+            // treat transfer_out as withdrawal
+            totalWithdrawals = totalWithdrawals.add(tx.getAmount() != null ? tx.getAmount() : BigDecimal.ZERO);
+        }
+    }
+
+    BigDecimal net = totalDeposits.subtract(totalWithdrawals);
+    long count = txs.size();
+
+    return new TransactionSummaryResponse(accountId, totalDeposits, totalWithdrawals, net, count, byType);
+}
+
+
     private TransactionResponse toResponse(Transaction tx) {
         return TransactionResponse.builder()
                 .id(tx.getId())
@@ -180,6 +233,7 @@ public class TransactionService {
                 .createdAt(tx.getCreatedAt())
                 .build();
     }
+    
     public Page<TransactionResponse> listForAccountPaged(UUID accountId,
                                                     int page,
                                                     int size,

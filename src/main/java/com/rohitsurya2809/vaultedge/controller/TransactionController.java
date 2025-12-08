@@ -6,6 +6,7 @@ import com.rohitsurya2809.vaultedge.service.AccountService;
 import com.rohitsurya2809.vaultedge.service.TransactionService;
 import com.rohitsurya2809.vaultedge.security.JwtUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -135,4 +136,23 @@ public class TransactionController {
         );
         return ResponseEntity.ok(resp);
     }
+
+    @GetMapping("/accounts/{accountId}/summary")
+public ResponseEntity<TransactionSummaryResponse> getSummary(
+        @PathVariable UUID accountId,
+        @RequestParam(value = "from", required = false) String fromIso,
+        @RequestParam(value = "to", required = false) String toIso,
+        @RequestHeader("Authorization") String auth
+) {
+    UUID caller = getCallerId(auth);
+    Account acc = accountService.getAccount(accountId);
+
+    if (!acc.getCustomer().getId().equals(caller)) {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not owner of account");
+    }
+
+    TransactionSummaryResponse summary = transactionService.getSummary(accountId, fromIso, toIso);
+    return ResponseEntity.ok(summary);
+}
+
 }
