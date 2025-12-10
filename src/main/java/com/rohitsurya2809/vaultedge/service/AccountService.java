@@ -23,7 +23,7 @@ public class AccountService {
         this.customerRepository = customerRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Account createAccount(UUID customerId, String accountType, String currency, BigDecimal initialDeposit) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new NotFoundException("Customer not found: " + customerId));

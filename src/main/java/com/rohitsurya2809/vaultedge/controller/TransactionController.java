@@ -52,52 +52,63 @@ public class TransactionController {
         return uid;
     }
 
-    // Deposit: only account owner can deposit (you may relax for deposits if needed)
+    // Deposit: only account owner can deposit (Idempotency-Key supported)
     @PostMapping("/accounts/{accountId}/deposit")
-    public ResponseEntity<TransactionResponse> deposit(@PathVariable("accountId") UUID accountId,
-                                                       @RequestBody DepositRequest req,
-                                                       @RequestHeader(value = "Authorization", required = true) String auth) {
+    public ResponseEntity<TransactionResponse> deposit(
+            @PathVariable("accountId") UUID accountId,
+            @RequestBody DepositRequest req,
+            @RequestHeader(value = "Authorization", required = true) String auth,
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
+
         UUID caller = getCallerId(auth);
         Account acc = accountService.getAccount(accountId);
         if (!acc.getCustomer().getId().equals(caller)) {
             throw new ResponseStatusException(FORBIDDEN, "Not owner of account");
         }
-        TransactionResponse resp = transactionService.deposit(accountId, req);
+        TransactionResponse resp = transactionService.deposit(accountId, req, idempotencyKey);
         return ResponseEntity.status(201).body(resp);
     }
 
-    // Withdraw: only owner
+    // Withdraw: only owner (Idempotency-Key supported)
     @PostMapping("/accounts/{accountId}/withdraw")
-    public ResponseEntity<TransactionResponse> withdraw(@PathVariable("accountId") UUID accountId,
-                                                        @RequestBody WithdrawRequest req,
-                                                        @RequestHeader(value = "Authorization", required = true) String auth) {
+    public ResponseEntity<TransactionResponse> withdraw(
+            @PathVariable("accountId") UUID accountId,
+            @RequestBody WithdrawRequest req,
+            @RequestHeader(value = "Authorization", required = true) String auth,
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
+
         UUID caller = getCallerId(auth);
         Account acc = accountService.getAccount(accountId);
         if (!acc.getCustomer().getId().equals(caller)) {
             throw new ResponseStatusException(FORBIDDEN, "Not owner of account");
         }
-        TransactionResponse resp = transactionService.withdraw(accountId, req);
+        TransactionResponse resp = transactionService.withdraw(accountId, req, idempotencyKey);
         return ResponseEntity.ok(resp);
     }
 
-    // Transfer: caller must own the source account (fromAccountId)
+    // Transfer: caller must own the source account (fromAccountId). Idempotency-Key supported.
     @PostMapping("/transfer")
-    public ResponseEntity<TransactionResponse> transfer(@RequestBody TransferRequest req,
-                                                        @RequestHeader(value = "Authorization", required = true) String auth) {
+    public ResponseEntity<TransactionResponse> transfer(
+            @RequestBody TransferRequest req,
+            @RequestHeader(value = "Authorization", required = true) String auth,
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
+
         UUID caller = getCallerId(auth);
         // ensure caller owns the source account
         Account source = accountService.getAccount(req.getFromAccountId());
         if (!source.getCustomer().getId().equals(caller)) {
             throw new ResponseStatusException(FORBIDDEN, "Not owner of source account");
         }
-        TransactionResponse resp = transactionService.transfer(req);
+        TransactionResponse resp = transactionService.transfer(req, idempotencyKey);
         return ResponseEntity.status(201).body(resp);
     }
 
     // List all transactions (non-paged) - only owner
     @GetMapping("/accounts/{accountId}")
-    public ResponseEntity<List<TransactionResponse>> listByAccount(@PathVariable("accountId") UUID accountId,
-                                                                   @RequestHeader(value = "Authorization", required = true) String auth) {
+    public ResponseEntity<List<TransactionResponse>> listByAccount(
+            @PathVariable("accountId") UUID accountId,
+            @RequestHeader(value = "Authorization", required = true) String auth) {
+
         UUID caller = getCallerId(auth);
         Account acc = accountService.getAccount(accountId);
         if (!acc.getCustomer().getId().equals(caller)) {
@@ -137,22 +148,22 @@ public class TransactionController {
         return ResponseEntity.ok(resp);
     }
 
+    // Summary endpoint - only owner
     @GetMapping("/accounts/{accountId}/summary")
-public ResponseEntity<TransactionSummaryResponse> getSummary(
-        @PathVariable UUID accountId,
-        @RequestParam(value = "from", required = false) String fromIso,
-        @RequestParam(value = "to", required = false) String toIso,
-        @RequestHeader("Authorization") String auth
-) {
-    UUID caller = getCallerId(auth);
-    Account acc = accountService.getAccount(accountId);
+    public ResponseEntity<TransactionSummaryResponse> getSummary(
+            @PathVariable UUID accountId,
+            @RequestParam(value = "from", required = false) String fromIso,
+            @RequestParam(value = "to", required = false) String toIso,
+            @RequestHeader(value = "Authorization", required = true) String auth) {
 
-    if (!acc.getCustomer().getId().equals(caller)) {
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not owner of account");
+        UUID caller = getCallerId(auth);
+        Account acc = accountService.getAccount(accountId);
+
+        if (!acc.getCustomer().getId().equals(caller)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not owner of account");
+        }
+
+        TransactionSummaryResponse summary = transactionService.getSummary(accountId, fromIso, toIso);
+        return ResponseEntity.ok(summary);
     }
-
-    TransactionSummaryResponse summary = transactionService.getSummary(accountId, fromIso, toIso);
-    return ResponseEntity.ok(summary);
-}
-
 }

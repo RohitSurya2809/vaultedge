@@ -12,9 +12,11 @@ com\rohitsurya2809\vaultedge\config\UUIDConverter.class
 com\rohitsurya2809\vaultedge\service\AccountService.class
 com\rohitsurya2809\vaultedge\repository\AuthUserRepository.class
 com\rohitsurya2809\vaultedge\dto\TransactionResponse.class
+com\rohitsurya2809\vaultedge\repository\IdempotencyKeyRepository.class
 com\rohitsurya2809\vaultedge\dto\RegisterRequest.class
 com\rohitsurya2809\vaultedge\dto\CustomerResponse$CustomerResponseBuilder.class
 com\rohitsurya2809\vaultedge\dto\TransactionSummaryResponse.class
+com\rohitsurya2809\vaultedge\model\IdempotencyKey.class
 com\rohitsurya2809\vaultedge\dto\WithdrawRequest.class
 com\rohitsurya2809\vaultedge\controller\AccountController$CreateAccountRequest.class
 com\rohitsurya2809\vaultedge\dto\DepositRequest$DepositRequestBuilder.class
@@ -25,6 +27,7 @@ com\rohitsurya2809\vaultedge\repository\TransactionRepository.class
 com\rohitsurya2809\vaultedge\dto\LoginRequest$LoginRequestBuilder.class
 com\rohitsurya2809\vaultedge\model\Account$AccountBuilder.class
 com\rohitsurya2809\vaultedge\repository\TransactionSpecification.class
+com\rohitsurya2809\vaultedge\service\IdempotencyService.class
 com\rohitsurya2809\vaultedge\dto\LoginResponse$LoginResponseBuilder.class
 com\rohitsurya2809\vaultedge\service\CustomerService.class
 com\rohitsurya2809\vaultedge\service\AuthService.class
