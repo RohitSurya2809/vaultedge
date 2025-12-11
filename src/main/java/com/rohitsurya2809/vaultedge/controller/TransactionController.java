@@ -11,12 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
 
+@Tag(name = "Transactions", description = "Deposit, withdraw, transfer and transaction history")
 @RestController
 @RequestMapping("/api/v1/transactions")
 public class TransactionController {
@@ -53,6 +57,7 @@ public class TransactionController {
     }
 
     // Deposit: only account owner can deposit (Idempotency-Key supported)
+    @Operation(summary = "Deposit to an account", description = "Deposit amount into account. Provide Idempotency-Key header to avoid duplicates.")
     @PostMapping("/accounts/{accountId}/deposit")
     public ResponseEntity<TransactionResponse> deposit(
             @PathVariable("accountId") UUID accountId,
@@ -70,6 +75,7 @@ public class TransactionController {
     }
 
     // Withdraw: only owner (Idempotency-Key supported)
+    @Operation(summary = "Withdraw from the account", description = "Withdraw amount from account. Provide Idempotency-Key header to avoid duplicates.")
     @PostMapping("/accounts/{accountId}/withdraw")
     public ResponseEntity<TransactionResponse> withdraw(
             @PathVariable("accountId") UUID accountId,
@@ -87,6 +93,7 @@ public class TransactionController {
     }
 
     // Transfer: caller must own the source account (fromAccountId). Idempotency-Key supported.
+    @Operation(summary = "Transfer between accounts", description = "Transfer amount from one account to another. Provide Idempotency-Key header to avoid duplicates.")
     @PostMapping("/transfer")
     public ResponseEntity<TransactionResponse> transfer(
             @RequestBody TransferRequest req,
@@ -104,6 +111,7 @@ public class TransactionController {
     }
 
     // List all transactions (non-paged) - only owner
+    @Operation(summary = "List all transactions for an account", description = "List all transactions for an account.")
     @GetMapping("/accounts/{accountId}")
     public ResponseEntity<List<TransactionResponse>> listByAccount(
             @PathVariable("accountId") UUID accountId,
@@ -118,6 +126,7 @@ public class TransactionController {
     }
 
     // Paged & filtered: only owner
+    @Operation(summary = "List paged transactions for an account", description = "List paged transactions for an account with optional filters: type, date range.")
     @GetMapping("/accounts/{accountId}/transactions")
     public ResponseEntity<Map<String, Object>> listByAccountPaged(
             @PathVariable("accountId") UUID accountId,
@@ -149,6 +158,7 @@ public class TransactionController {
     }
 
     // Summary endpoint - only owner
+    @Operation(summary = "Get transaction summary for an account", description = "Get transaction summary (total deposits, withdrawals) for an account over an optional date range.")
     @GetMapping("/accounts/{accountId}/summary")
     public ResponseEntity<TransactionSummaryResponse> getSummary(
             @PathVariable UUID accountId,

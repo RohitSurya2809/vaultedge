@@ -36,3 +36,12 @@ A production-minded microservice exposing REST APIs for customer & account manag
 - Add idempotency-key table/logic
 - Add Testcontainers integration tests
 - Improve audit & monitoring (Actuator, Prometheus)
+
+## API Documentation (Swagger)
+
+After running the app (locally or via Docker), open:
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- OpenAPI JSON: http://localhost:8080/v3/api-docs
+
+Use the **Authorize** button in Swagger UI to paste your JWT `Bearer <token>` to test protected endpoints.
+
