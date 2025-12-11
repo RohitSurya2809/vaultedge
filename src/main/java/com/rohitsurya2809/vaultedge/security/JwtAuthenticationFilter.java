@@ -47,25 +47,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             // quick header inspect
             String username = jwtUtil.extractUsername(token);
-            log.debug("JWT token present. subject={}, uri={}", username, request.getRequestURI());
+if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    if (jwtUtil.validateToken(token)) {
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+           userDetails, null, userDetails.getAuthorities());
+        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+}
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (userDetails == null) {
-                    log.debug("UserDetailsService returned null for username={}", username);
-                } else {
-                    boolean valid = jwtUtil.validateToken(token);
-                    if (!valid) {
-                        log.debug("JWT validation failed for user={}", username);
-                    } else {
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        log.debug("JWT authentication successful for user={} authorities={}", username, userDetails.getAuthorities());
-                    }
-                }
-            }
         } catch (Exception ex) {
             log.debug("JWT authentication processing failed: {}", ex.toString());
         }
