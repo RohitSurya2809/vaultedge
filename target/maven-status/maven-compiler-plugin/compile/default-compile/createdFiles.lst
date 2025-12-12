@@ -43,6 +43,7 @@ com\rohitsurya2809\vaultedge\model\Transaction.class
 com\rohitsurya2809\vaultedge\dto\AccountResponse.class
 com\rohitsurya2809\vaultedge\security\CustomUserDetailsService.class
 com\rohitsurya2809\vaultedge\dto\TransferRequest$TransferRequestBuilder.class
+com\rohitsurya2809\vaultedge\config\CorsConfig.class
 com\rohitsurya2809\vaultedge\model\AuthUser$AuthUserBuilder.class
 com\rohitsurya2809\vaultedge\security\JwtAuthenticationFilter.class
 com\rohitsurya2809\vaultedge\model\Account.class

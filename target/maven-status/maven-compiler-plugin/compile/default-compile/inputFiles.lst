@@ -22,6 +22,7 @@ D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\model\AuthUser.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\model\Transaction.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\dto\AccountResponse.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\dto\LoginResponse.java
+D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\config\CorsConfig.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\dto\TransactionResponse.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\service\AuthService.java
 D:\vaultedge\src\main\java\com\rohitsurya2809\vaultedge\service\AccountService.java

@@ -17,11 +17,10 @@ flyway:
   locations: classpath:db/migration
 
 jwt:
-  secret: 12344567890abcdefghijklmnopqrstuvwxyz
+  secret: 1234467890abcdefghijklmnopqrstuvwxyz
   expiration: 3600 
 
 logging:
   level:
     org.springframework.security: DEBUG
     com.rohitsurya2809.vaultedge.security: DEBUG
-

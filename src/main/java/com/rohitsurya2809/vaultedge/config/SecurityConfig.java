@@ -5,6 +5,7 @@ import com.rohitsurya2809.vaultedge.security.JwtAuthenticationFilter;
 import com.rohitsurya2809.vaultedge.security.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,7 +24,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtUtil jwtUtil, CustomUserDetailsService userDetailsService) {
+    // <-- NOTE: @Lazy on userDetailsService avoids early instantiation which can cause JPA/entityManager circular problems
+    public SecurityConfig(JwtUtil jwtUtil, @Lazy CustomUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
@@ -31,8 +33,9 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService); // CustomUserDetailsService
-        provider.setPasswordEncoder(passwordEncoder());    // BCryptPasswordEncoder bean
+        // userDetailsService will be resolved lazily when provider is used
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
@@ -46,6 +49,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // Make the filter bean lazy too (so the filter doesn't trigger loadUserByUsername during app context startup)
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
@@ -54,7 +58,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> {}) // if you added CorsConfig earlier this enables it
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
