@@ -1,0 +1,9 @@
+target
+.git
+.gitignore
+.vscode
+.idea
+*.md
+*.log
+.DS_Store
+src/main/resources/db/migration/*.sql   # keep if you want compose to mount, else remove
