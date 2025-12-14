@@ -146,13 +146,14 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
   "password": "password"
 }'
 
-💰 Deposit
+
+### 💰 Deposit
 curl -X POST http://localhost:8080/api/v1/transactions/accounts/{id}/deposit \
 -H "Authorization: Bearer <TOKEN>" \
 -H "Content-Type: application/json" \
 -d '{ "amount": 1000 }'
 
-📖 Swagger UI
+### 📖 Swagger UI
 
 Once running:
 http://localhost:8080/swagger-ui.html
@@ -160,20 +161,20 @@ http://localhost:8080/swagger-ui.html
 🐳 Run with Docker:
 docker compose up --build
 
-Services:
+### Services:
 
 App → http://localhost:8080
 Adminer → http://localhost:8081
 MySQL → localhost:3307
 
-⚙️ CI/CD
+### ⚙️ CI/CD
 
 VaultEdge uses GitHub Actions for CI:
 Java 17 build
 Maven verification
 Automatic checks on push & PR
 
-📌 Future Enhancements
+### 📌 Future Enhancements
 
 Rate limiting
 
@@ -185,7 +186,7 @@ Admin dashboards
 
 Event streaming (Kafka)
 
-👨‍💻 Author
+### 👨‍💻 Author
 
 Rohit Surya
 B.Tech — AI & Data Science
