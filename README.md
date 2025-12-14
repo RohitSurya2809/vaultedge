@@ -1,47 +1,192 @@
-# Banking Microservice (Spring Boot + MySQL)
+# 🔐 VaultEdge — Secure Banking Backend (Spring Boot)
 
-## Elevator pitch
-A production-minded microservice exposing REST APIs for customer & account management, secure authentication (JWT), and ACID-safe money transfers with transaction ledger.
+VaultEdge is a **production-grade banking backend** built using **Spring Boot, MySQL, JWT authentication, Flyway migrations, and Docker**.
 
-## Tech stack
-- Java 17, Spring Boot (Web, Data JPA, Security)
-- MySQL, Flyway
-- JWT authentication, BCrypt
-- Docker & Docker Compose
-- OpenAPI / Swagger
+It supports secure customer onboarding, account management, transactions (deposit / withdraw / transfer), auditing, and role-based access control — designed to be **frontend-ready** for hackathons and real-world applications.
 
-## Getting started (local)
-1. `docker-compose up --build`
-2. App: `http://localhost:8080`
-3. Swagger UI: `http://localhost:8080/swagger-ui.html` (or `/swagger-ui/index.html`)
+---
 
-## Key endpoints
-- `POST /api/v1/auth/register` - create user
-- `POST /api/v1/auth/login` - login (returns JWT)
-- `GET /api/v1/customers/{id}`
-- `POST /api/v1/accounts`
-- `POST /api/v1/accounts/{id}/deposit`
-- `POST /api/v1/transfer` - transfer between accounts
+## 🚀 Tech Stack
 
-## Architecture
-(Add architecture.png diagram here)
+- **Backend:** Spring Boot 3 (Java 17)
+- **Security:** Spring Security + JWT
+- **Database:** MySQL 8 + Flyway migrations
+- **ORM:** Spring Data JPA (Hibernate)
+- **Auth:** JWT (Stateless)
+- **API Docs:** Swagger / OpenAPI
+- **DevOps:** Docker, Docker Compose
+- **CI/CD:** GitHub Actions
+- **Audit & Logging:** Custom Audit Service
 
-## Design notes
-- Use optimistic locking (`@Version`) to prevent lost updates
-- Insert immutable transaction rows for every money movement
-- Transfers are executed in a DB transaction (debit + credit + ledger inserts)
-- Idempotency keys for safe retries (planned)
+---
 
-## Next steps
-- Add idempotency-key table/logic
-- Add Testcontainers integration tests
-- Improve audit & monitoring (Actuator, Prometheus)
+## ✨ Key Features
 
-## API Documentation (Swagger)
+### 🔑 Authentication & Authorization
+- JWT-based stateless authentication
+- Role-based access (`USER`, `ADMIN`)
+- Secure password hashing (BCrypt)
 
-After running the app (locally or via Docker), open:
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- OpenAPI JSON: http://localhost:8080/v3/api-docs
+### 👤 Customer Management
+- Customer registration
+- Secure login
+- Profile ownership enforcement
 
-Use the **Authorize** button in Swagger UI to paste your JWT `Bearer <token>` to test protected endpoints.
+### 🏦 Account Management
+- Create bank accounts
+- View account balance
+- Ownership checks (only owner can access)
 
+### 💸 Transactions
+- Deposit
+- Withdraw
+- Transfer (atomic, transactional)
+- Idempotency support (safe retries)
+- Pagination, sorting, filtering
+- Transaction summary (inflow / outflow)
+
+### 📜 Auditing
+- Login success / failure
+- Deposits, withdrawals, transfers
+- Timestamped, structured metadata
+- Future-ready for compliance & analytics
+
+### 🐳 Dockerized
+- Spring Boot app container
+- MySQL container
+- Adminer (DB UI)
+- One-command startup
+
+---
+
+## 🧱 System Architecture
+
+### High-Level Architecture
+
+[ Frontend (React / Next / Flutter) ]
+|
+| REST API (JSON)
+v
+[ Spring Boot API — VaultEdge ]
+|
+
+| | |
+[ Auth ] [ Business Logic ] [ Audit ]
+| |
+[ JWT ] [ Accounts / Txns ]
+|
+[ MySQL ]
+
+
+---
+
+## 🔄 Transfer Flow (Sequence)
+
+User
+|
+| POST /transfer
+v
+AuthController
+|
+| validate JWT
+v
+TransactionService
+|
+| debit source account
+| credit destination account
+| save transactions
+| audit log
+v
+Database (MySQL)
+
+
+---
+
+## 📦 Database Design (ER Overview)
+
+**Customer**
+- id (UUID)
+- name, email, password
+
+**AuthUser**
+- id (UUID)
+- username
+- roles
+
+**Account**
+- id (UUID)
+- customer_id
+- balance
+
+**Transaction**
+- id (UUID)
+- account_id
+- type (DEPOSIT / WITHDRAW / TRANSFER)
+- amount
+- reference_id
+- timestamp
+
+**AuditLog**
+- action
+- user_id
+- metadata
+- ip
+- timestamp
+
+---
+
+## 🧪 API Examples (cURL)
+
+### 🔐 Login
+```bash
+curl -X POST http://localhost:8080/api/v1/auth/login \
+-H "Content-Type: application/json" \
+-d '{
+  "username": "user@example.com",
+  "password": "password"
+}'
+
+💰 Deposit
+curl -X POST http://localhost:8080/api/v1/transactions/accounts/{id}/deposit \
+-H "Authorization: Bearer <TOKEN>" \
+-H "Content-Type: application/json" \
+-d '{ "amount": 1000 }'
+
+📖 Swagger UI
+
+Once running:
+http://localhost:8080/swagger-ui.html
+
+🐳 Run with Docker:
+docker compose up --build
+
+Services:
+
+App → http://localhost:8080
+Adminer → http://localhost:8081
+MySQL → localhost:3307
+
+⚙️ CI/CD
+
+VaultEdge uses GitHub Actions for CI:
+Java 17 build
+Maven verification
+Automatic checks on push & PR
+
+📌 Future Enhancements
+
+Rate limiting
+
+Notifications
+
+KYC workflows
+
+Admin dashboards
+
+Event streaming (Kafka)
+
+👨‍💻 Author
+
+Rohit Surya
+B.Tech — AI & Data Science
+Backend | Java | Spring Boot | Systems Design
