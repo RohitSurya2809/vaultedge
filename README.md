@@ -133,7 +133,7 @@ Database (MySQL)
 - ip
 - timestamp
 
----
+--
 
 ## 🧪 API Examples (cURL)
 
@@ -190,4 +190,5 @@ Event streaming (Kafka)
 
 Rohit Surya
 B.Tech — AI & Data Science
+
 Backend | Java | Spring Boot | Systems Design
